@@ -1,5 +1,8 @@
 pragma solidity ^0.4.6;
 
+import "Owned.sol";
+import "authorization/AbstractAuthorization.sol";
+
 contract DroneNoOraclize is Owned {
 
 // List of registred destination by public key
@@ -15,7 +18,7 @@ contract DroneNoOraclize is Owned {
                /* stuff and mapping  */
 
 address public droneStation;
-AbstractAUthorization AllowedDroneCaller; //where the contract Allowed is
+AbstractAuthorization AllowedDroneCaller; //where the contract Allowed is
 //droneStation is a key controled by the node at the station of the droneStation
 // this node will also handle uploading the pictures taken by the drone 
 address public currentDestination; //currentDestination acts as the state of the drone

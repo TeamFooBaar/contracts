@@ -1,7 +1,7 @@
 pragma solidity ^0.4.6;
 //PAYMENT SYSTEM WITH contract Withdraw
-import "AbstractAuthorization.sol"
-import "Owned.sol"
+import "./AbstractAuthorization.sol";
+import "../Owned.sol";
 
 contract Allowed is Owned, AbstractAuthorization { 
   mapping(address => uint) public AllowedList;
@@ -34,6 +34,8 @@ addAllowed(msg.sender);
   }
   /* withdraw funds*/
  function withdrawfunds() ownerOnly  {
-     (new Withdraw).value(this.balance)();
+   if(!msg.sender.send(this.balance)) {
+    throw;
+   }
  }
 }

@@ -8,3 +8,4 @@ contract Owned {
     if (msg.sender != owner) throw;
     _;
   }
+}
