@@ -92,11 +92,33 @@ function requestFlightOwner(address _to) ownerOnly {
 oraclize_query("URL", APIURL);
 }
 
-            /* Oracle callback */
+
+//¤¤¤¤¤¤¤¤¤¤¤¤ CHAINSAWING STRING INTO UINT *¤¤¤¤¤¤¤¤¤¤¤
+// Copyright (c) 2015-2016 Oraclize srl, Thomas Bertani
+function parseInt(string _a, uint _b) internal returns (uint) {
+  bytes memory bresult = bytes(_a);
+  uint mint = 0;
+  bool decimals = false;
+  for (uint i = 0; i < bresult.length; i++) {
+    if ((bresult[i] >= 48) && (bresult[i] <= 57)) {
+      if (decimals) {
+        if (_b == 0) break;
+          else _b--;
+      }
+      mint *= 10;
+      mint += uint(bresult[i]) - 48;
+    } else if (bresult[i] == 46) decimals = true;
+  }
+  return mint;
+}
+
+            /* Oracle callback */ 
+                //"json(http://weathers.co/api.php?city=Zug).data.wind
     
-function __callback(bytes32 myid, bool result) {
+function __callback(bytes32 myid, string result) {
         if (msg.sender != oraclize_cbAddress()) throw;
-        if (!result == false){ // or whatever the result type
+        uint _windSpeed = parseInt(result, 0);
+        if (_windSpeed > 50){ // level 7 on the Beaufort scale : you should go sailing eaither
            flightRequest(currentDestination, "refused");
            currentDestination = 0x0;
         }

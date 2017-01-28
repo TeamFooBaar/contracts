@@ -1,64 +1,6 @@
 pragma solidity ^0.4.6;
-//using https://dapps.oraclize.it/browser-solidity/
-import "https://github.com/oraclize/ethereum-api/oraclizeAPI_0.4.sol";
-contract Owned {
-  /* The owner of the contract can add members and transfer ownership.
-     initial value is the contract creator */
-  address public owner = msg.sender;
-  modifier ownerOnly() {
-    if (msg.sender != owner) throw;
-    _;
-  }
 
-  /* transfer ownership */
-  function changeOwner(address _newOwner) ownerOnly {
-    owner = _newOwner;
-  }
-}
-//PAYMENT SYSTEM WITH contract Withdraw
-contract Allowed is Owned { 
-  mapping(address => uint) public AllowedList;
-  event AllowedListLog(address _member, uint _description);
-
-  /* Check that a given address is on the Allowedlist*/
-  function isAllowed(address _member) constant returns (bool){
-   return AllowedList[_member] > now ;
-  }
-
-/* pay at least 1 ETH to be allowed for a year */
-/* the 1 year and 1 ETH can of course be parameters */
-
-function register() payable {
-if (msg.value < 1 ether) throw;
-addAllowed(msg.sender);
-}
-  /* addAllowed*/
-
-  function addAllowed(address _member) internal {
-    if (AllowedList[_member] > now) 
-    AllowedList[_member] +=  31556926 ;  //31556926 seconds in a year
-    AllowedList[_member] = now + 31556926 ;
-    AllowedListLog(_member, AllowedList[_member]);
-  }
-    /* supprAllowed*/
-  function supprAllowed(address _member) ownerOnly {
-    AllowedList[_member] = 0;
-    AllowedListLog(_member, 0);
-  }
-  /* withdraw funds*/
- function withdrawfunds() ownerOnly  {
-     (new Withdraw).value(this.balance)();
- }
-}
-contract Withdraw {
-   //safe withdraw?
-   Withdraw ispayable;
-function Withdraw() payable {
-   selfdestruct(msg.sender);
-}
-}
-
-contract Drone is Owned, usingOraclize {
+contract Drone is Owned {
 
 // List of registred destination by public key
 // if a key is registred AND if the flying conditions are ok
@@ -102,7 +44,6 @@ function Drone(address _droneStation, address _allowed, string _APIURL ) {
     droneStation = _droneStation;
     AllowedDroneCaller = Allowed(_allowed);
     APIURL = _APIURL;
-    //"json(http://weathers.co/api.php?city=Zug).data.temperature
     currentDestination = 0x0;
 
     } //initialize the droneStation address
@@ -174,9 +115,7 @@ function parseInt(string _a, uint _b) internal returns (uint) {
             /* Oracle callback */ 
                 //"json(http://weathers.co/api.php?city=Zug).data.wind
     
-function __callback(bytes32 myid, string result) {
-        if (msg.sender != oraclize_cbAddress()) throw;
-        uint _windSpeed = parseInt(result, 0);
+function __callback(uint _windSpeed) {
         if (_windSpeed > 50){ // level 7 on the Beaufort scale : you should go sailing eaither
            flightRequest(currentDestination, "refused");
            currentDestination = 0x0;
