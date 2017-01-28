@@ -37,9 +37,18 @@ Finally, the ground control send a transaction to the smart contract containing 
 ## Tests:
 
 Deploy Allowed : OK.
+
+
 Allowed functions: all OK but withdrawfunds (see below)
-function withdrawfunds : not OK
+
+
+Function withdrawfunds : not OK, easy to fix
+
 
 Deploi Drone : OK
+
+
 Drone functions: all OK but...
-wait the contract ends up holding funds because of the Oraclize mecanism... a withdrawfunds scheeme has to be implemented here
+
+
+wait! the contract ends up holding funds because of the Oraclize mecanism... a withdrawfunds scheeme has to be implemented here
