@@ -1,6 +1,8 @@
 pragma solidity ^0.4.6;
 
-contract Drone is Owned {
+import "Owned.sol"
+
+contract Drone is Owned, usingOraclize {
 
 // List of registred destination by public key
 // if a key is registred AND if the flying conditions are ok
@@ -69,21 +71,15 @@ function changeAPIURL(string _newAPIURL) ownerOnly {
 
             /* METHODS */
 //for the moment flight requests are instantaneous 
-function requestFlight(uint _windSpeed) {
+function requestFlight() {
     //no request if already a flight is already in progress
     if (currentDestination != 0x0) throw;
     //check if msg.sender is Allowed
     _isAllowed = AllowedDroneCaller.isAllowed(msg.sender);
         if (!_isAllowed) throw; 
     //check if flight conditions are good
-
-            if (_windSpeed > 50){ // level 7 on the Beaufort scale : you should go sailing eaither
-           flightRequest(currentDestination, "refused");
-           currentDestination = 0x0;
-        }
-            currentDestination = msg.sender;
-        flightRequest(currentDestination, "accepted");
-
+    currentDestination = msg.sender;
+oraclize_query("URL", APIURL);
 
 }
 
@@ -95,13 +91,13 @@ function requestFlightOwner(address _to) ownerOnly {
         if (!_isAllowed) throw; 
     //check if flight conditions are good
     currentDestination = _to;
-
+oraclize_query("URL", APIURL);
 }
 
 
 //¤¤¤¤¤¤¤¤¤¤¤¤ CHAINSAWING STRING INTO UINT *¤¤¤¤¤¤¤¤¤¤¤
 // Copyright (c) 2015-2016 Oraclize srl, Thomas Bertani
-/*function parseInt(string _a, uint _b) internal returns (uint) {
+function parseInt(string _a, uint _b) internal returns (uint) {
   bytes memory bresult = bytes(_a);
   uint mint = 0;
   bool decimals = false;
@@ -116,7 +112,21 @@ function requestFlightOwner(address _to) ownerOnly {
     } else if (bresult[i] == 46) decimals = true;
   }
   return mint;
-}*/
+}
+
+            /* Oracle callback */ 
+                //"json(http://weathers.co/api.php?city=Zug).data.wind
+    
+function __callback(bytes32 myid, string result) {
+        if (msg.sender != oraclize_cbAddress()) throw;
+        uint _windSpeed = parseInt(result, 0);
+        if (_windSpeed > 50){ // level 7 on the Beaufort scale : you should go sailing eaither
+           flightRequest(currentDestination, "refused");
+           currentDestination = 0x0;
+        }
+        flightRequest(currentDestination, "accepted");
+    }
+    
 
 
     function resetState(string _uploadedTo) droneOnly {

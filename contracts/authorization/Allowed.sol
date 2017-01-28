@@ -1,6 +1,9 @@
 pragma solidity ^0.4.6;
 //PAYMENT SYSTEM WITH contract Withdraw
-contract Allowed is Owned { 
+import "AbstractAuthorization.sol"
+import "Owned.sol"
+
+contract Allowed is Owned, AbstractAuthorization { 
   mapping(address => uint) public AllowedList;
   event AllowedListLog(address _member, uint _description);
 

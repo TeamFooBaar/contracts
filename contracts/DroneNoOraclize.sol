@@ -1,6 +1,6 @@
 pragma solidity ^0.4.6;
 
-contract Drone is Owned, usingOraclize {
+contract DroneNoOraclize is Owned {
 
 // List of registred destination by public key
 // if a key is registred AND if the flying conditions are ok
@@ -15,7 +15,7 @@ contract Drone is Owned, usingOraclize {
                /* stuff and mapping  */
 
 address public droneStation;
-Allowed AllowedDroneCaller; //where the contract Allowed is
+AbstractAUthorization AllowedDroneCaller; //where the contract Allowed is
 //droneStation is a key controled by the node at the station of the droneStation
 // this node will also handle uploading the pictures taken by the drone 
 address public currentDestination; //currentDestination acts as the state of the drone
@@ -42,7 +42,7 @@ modifier droneOnly() {
   }
 function Drone(address _droneStation, address _allowed, string _APIURL ) {
     droneStation = _droneStation;
-    AllowedDroneCaller = Allowed(_allowed);
+    AllowedDroneCaller = AbstractAuthorization(_allowed);
     APIURL = _APIURL;
     currentDestination = 0x0;
 
@@ -58,7 +58,7 @@ function changeDroneStation(address _newDroneStation) ownerOnly {
 function changeAllowed(address _newAllowed) ownerOnly {
     // this part about ownership, who can change etc. has to be tuned
     // owner can be a multisig wallet for example
-        AllowedDroneCaller = Allowed(_newAllowed);
+        AllowedDroneCaller = AbstractAuthorization(_newAllowed);
 }
 function changeAPIURL(string _newAPIURL) ownerOnly {
     // this part about ownership, who can change etc. has to be tuned
@@ -69,15 +69,21 @@ function changeAPIURL(string _newAPIURL) ownerOnly {
 
             /* METHODS */
 //for the moment flight requests are instantaneous 
-function requestFlight() {
+function requestFlight(uint _windSpeed) {
     //no request if already a flight is already in progress
     if (currentDestination != 0x0) throw;
     //check if msg.sender is Allowed
     _isAllowed = AllowedDroneCaller.isAllowed(msg.sender);
         if (!_isAllowed) throw; 
     //check if flight conditions are good
-    currentDestination = msg.sender;
-oraclize_query("URL", APIURL);
+
+            if (_windSpeed > 50){ // level 7 on the Beaufort scale : you should go sailing eaither
+           flightRequest(currentDestination, "refused");
+           currentDestination = 0x0;
+        }
+            currentDestination = msg.sender;
+        flightRequest(currentDestination, "accepted");
+
 
 }
 
@@ -89,13 +95,13 @@ function requestFlightOwner(address _to) ownerOnly {
         if (!_isAllowed) throw; 
     //check if flight conditions are good
     currentDestination = _to;
-oraclize_query("URL", APIURL);
+
 }
 
 
 //¤¤¤¤¤¤¤¤¤¤¤¤ CHAINSAWING STRING INTO UINT *¤¤¤¤¤¤¤¤¤¤¤
 // Copyright (c) 2015-2016 Oraclize srl, Thomas Bertani
-function parseInt(string _a, uint _b) internal returns (uint) {
+/*function parseInt(string _a, uint _b) internal returns (uint) {
   bytes memory bresult = bytes(_a);
   uint mint = 0;
   bool decimals = false;
@@ -110,21 +116,7 @@ function parseInt(string _a, uint _b) internal returns (uint) {
     } else if (bresult[i] == 46) decimals = true;
   }
   return mint;
-}
-
-            /* Oracle callback */ 
-                //"json(http://weathers.co/api.php?city=Zug).data.wind
-    
-function __callback(bytes32 myid, string result) {
-        if (msg.sender != oraclize_cbAddress()) throw;
-        uint _windSpeed = parseInt(result, 0);
-        if (_windSpeed > 50){ // level 7 on the Beaufort scale : you should go sailing eaither
-           flightRequest(currentDestination, "refused");
-           currentDestination = 0x0;
-        }
-        flightRequest(currentDestination, "accepted");
-    }
-    
+}*/
 
 
     function resetState(string _uploadedTo) droneOnly {
