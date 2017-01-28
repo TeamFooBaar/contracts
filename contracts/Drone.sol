@@ -1,3 +1,8 @@
+pragma solidity ^0.4.6;
+
+import "Owned.sol";
+import "authorization/AbstractAuthorization.sol";
+import "usingOraclize.sol";
 
 contract Drone is Owned, usingOraclize {
 
@@ -14,7 +19,7 @@ contract Drone is Owned, usingOraclize {
                /* stuff and mapping  */
 
 address public droneStation;
-Allowed AllowedDroneCaller; //where the contract Allowed is
+AbstractAuthorization AllowedDroneCaller; //where the contract Allowed is
 //droneStation is a key controled by the node at the station of the droneStation
 // this node will also handle uploading the pictures taken by the drone 
 address public currentDestination; //currentDestination acts as the state of the drone
@@ -42,7 +47,7 @@ modifier droneOnly() {
   }
 function Drone(address _droneStation, address _allowed, string _APIURL ) {
     droneStation = _droneStation;
-    AllowedDroneCaller = Allowed(_allowed);
+    AllowedDroneCaller = AbstractAuthorization(_allowed);
     APIURL = _APIURL;
     currentDestination = 0x0000000000000000000000000000000000000000;
 
@@ -58,7 +63,7 @@ function changeDroneStation(address _newDroneStation) ownerOnly {
 function changeAllowed(address _newAllowed) ownerOnly {
     // this part about ownership, who can change etc. has to be tuned
     // owner can be a multisig wallet for example
-        AllowedDroneCaller = Allowed(_newAllowed);
+        AllowedDroneCaller = AbstractAuthorization(_newAllowed);
 }
 function changeAPIURL(string _newAPIURL) ownerOnly {
     // this part about ownership, who can change etc. has to be tuned
