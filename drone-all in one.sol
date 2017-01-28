@@ -102,6 +102,7 @@ function Drone(address _droneStation, address _allowed, string _APIURL ) {
     droneStation = _droneStation;
     AllowedDroneCaller = Allowed(_allowed);
     APIURL = _APIURL;
+    //"json(http://weathers.co/api.php?city=Zug).data.temperature
     currentDestination = 0x0;
 
     } //initialize the droneStation address

@@ -1,4 +1,4 @@
-pragma solidity ^0.4.7;
+pragma solidity ^0.4.6;
 //PAYMENT SYSTEM WITH contract Withdraw
 contract Allowed is Owned { 
   mapping(address => uint) public AllowedList;
