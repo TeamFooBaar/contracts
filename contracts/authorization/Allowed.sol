@@ -34,8 +34,6 @@ addAllowed(msg.sender);
   }
   /* withdraw funds*/
  function withdrawfunds() ownerOnly  {
-   if(!msg.sender.send(this.balance)) {
-    throw;
-   }
+owner.send(this.balance);
  }
 }

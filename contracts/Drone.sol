@@ -140,5 +140,10 @@ currentDestination = 0x0000000000000000000000000000000000000000;
 flightLog(currentDestination, "state reseted by owner");
 currentDestination = 0x0000000000000000000000000000000000000000;
 
+  /* withdraw funds*/
+    function withdrawfunds() ownerOnly  {
+owner.send(this.balance);
+}
+
 }
 }
