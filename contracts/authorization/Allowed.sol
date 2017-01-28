@@ -33,9 +33,9 @@ addAllowed(msg.sender);
     AllowedListLog(_member, 0);
   }
   /* withdraw funds*/
- function withdrawfunds() ownerOnly  {
-   if(!msg.sender.send(this.balance)) {
-    throw;
-   }
- }
+  function withdrawfunds() ownerOnly  {
+    if(!owner.send(this.balance)) {
+      throw;
+    }
+  }
 }

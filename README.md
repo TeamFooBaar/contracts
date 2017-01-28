@@ -1,18 +1,49 @@
-# contracts
+# Automated Drone for Solar panel inspections Yayyy!
 
-ABI before truffle
+----
 
-Allowed
+## What do we use?
 
-[{"constant":false,"inputs":[],"name":"register","outputs":[],"payable":true,"type":"function"},{"constant":false,"inputs":[],"name":"withdrawfunds","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"owner","outputs":[{"name":"","type":"address"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"_newOwner","type":"address"}],"name":"changeOwner","outputs":[],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"_member","type":"address"}],"name":"supprAllowed","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[{"name":"_member","type":"address"}],"name":"isAllowed","outputs":[{"name":"","type":"bool"}],"payable":false,"type":"function"},{"constant":true,"inputs":[{"name":"","type":"address"}],"name":"AllowedList","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"anonymous":false,"inputs":[{"indexed":false,"name":"_member","type":"address"},{"indexed":false,"name":"_description","type":"uint256"}],"name":"AllowedListLog","type":"event"}]
+**Ethereum**, **Oraclize**, AWS/**IPFS**/SWARM (for hosting), BlockoneID for permission
+(in bold those that are already supported)
 
-Drone
-
-[{"constant":false,"inputs":[{"name":"_newDroneStation","type":"address"}],"name":"changeDroneStation","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"currentDestination","outputs":[{"name":"","type":"address"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"myid","type":"bytes32"},{"name":"result","type":"string"}],"name":"__callback","outputs":[],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"myid","type":"bytes32"},{"name":"result","type":"string"},{"name":"proof","type":"bytes"}],"name":"__callback","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"APIURL","outputs":[{"name":"","type":"string"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"droneStation","outputs":[{"name":"","type":"address"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"_to","type":"address"}],"name":"requestFlightOwner","outputs":[],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"_newAPIURL","type":"string"}],"name":"changeAPIURL","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"owner","outputs":[{"name":"","type":"address"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"_newAllowed","type":"address"}],"name":"changeAllowed","outputs":[],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"_newOwner","type":"address"}],"name":"changeOwner","outputs":[],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"_uploadedTo","type":"string"}],"name":"resetState","outputs":[],"payable":false,"type":"function"},{"constant":false,"inputs":[],"name":"requestFlight","outputs":[],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"myid","type":"bytes32"},{"name":"result","type":"int256"}],"name":"__callback","outputs":[],"payable":false,"type":"function"},{"constant":false,"inputs":[],"name":"resetStateOwner","outputs":[],"payable":false,"type":"function"},{"inputs":[{"name":"_droneStation","type":"address"},{"name":"_allowed","type":"address"},{"name":"_APIURL","type":"string"}],"payable":false,"type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"name":"to","type":"address"},{"indexed":false,"name":"acceptedOrNot","type":"string"}],"name":"flightRequest","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"to","type":"address"},{"indexed":false,"name":"uploadedTo","type":"string"}],"name":"flightLog","type":"event"}]
+## {Foo Baar} how does it work?
 
 
-Tests:
+The drone is resting on a ground control station that is connected to the Ethereum blockchain.
+
+
+The Solar Panel is linked to a electric meter that is connected to the Ethereum blockchain.
+
+When the meter detects an unusual loss in output it request an intervention from the drone by sending a transaction to an Ethereum Smartcontract:
+
+* if the meter's Ethereum address has been previously approved, 
+
+* and if the drone is not yet in flight, 
+
+* and if the flying conditions are alright
+
+Then the smartcontract announces a public event containing  **flight request accepted** and the **Ethereum address of the meter**.
+
+The ground control sees this event and load the corresponding flight plan for this Ethereum address (thus no GPS coordinate are published in the blockchain).
+
+The flight plan is a return trip including a picture of the solar plan. As it lands back, the ground control gets the picture and upload it on IPFS (or Swarm). 
+
+Finally, the ground control send a transaction to the smart contract containing a pointer to where the file is hosted. The drone is now available for a new request and the dirtyness of the solar panel can be assessed...
+
+
+### Hey, since we will have a growing public database for dirty panels, what about doing some deeplearning on that? Oh, boy!!!
+
+## Tests:
 
 Deploy Allowed : OK.
-function register : OK.
-funciton withdrawfunds : not OK
+
+
+Allowed functions: OK
+
+
+Deploi Drone : OK
+
+
+Drone functions: OK
+

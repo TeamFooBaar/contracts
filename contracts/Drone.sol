@@ -112,7 +112,6 @@ contract Drone is Owned, usingOraclize {
     }
     return mint;
   }
-
               /* Oracle callback */ 
                   //"json(http://weathers.co/api.php?city=Zug).data.wind
       
@@ -133,6 +132,12 @@ contract Drone is Owned, usingOraclize {
   }
   function resetStateOwner() ownerOnly {
     flightLog(currentDestination, "state reseted by owner");
-    currentDestination = 0x0000000000000000000000000000000000000000;
+    currentDestination = 0;
+  }
+  /* withdraw funds*/
+  function withdrawfunds() ownerOnly  {
+    if(!owner.send(this.balance)) {
+      throw;
+    }
   }
 }
