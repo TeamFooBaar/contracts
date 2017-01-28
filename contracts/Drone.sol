@@ -1,8 +1,3 @@
-pragma solidity ^0.4.6;
-
-import "Owned.sol";
-import "authorization/AbstractAuthorization.sol";
-import "usingOraclize.sol";
 
 contract Drone is Owned, usingOraclize {
 
@@ -19,12 +14,13 @@ contract Drone is Owned, usingOraclize {
                /* stuff and mapping  */
 
 address public droneStation;
-AbstractAuthorization AllowedDroneCaller; //where the contract Allowed is
+Allowed AllowedDroneCaller; //where the contract Allowed is
 //droneStation is a key controled by the node at the station of the droneStation
 // this node will also handle uploading the pictures taken by the drone 
 address public currentDestination; //currentDestination acts as the state of the drone
 string public APIURL;
 bool internal _isAllowed;
+
 
 
 
@@ -46,7 +42,7 @@ modifier droneOnly() {
   }
 function Drone(address _droneStation, address _allowed, string _APIURL ) {
     droneStation = _droneStation;
-    AllowedDroneCaller = AbstractAuthorization(_allowed);
+    AllowedDroneCaller = Allowed(_allowed);
     APIURL = _APIURL;
     currentDestination = 0x0000000000000000000000000000000000000000;
 
@@ -62,7 +58,7 @@ function changeDroneStation(address _newDroneStation) ownerOnly {
 function changeAllowed(address _newAllowed) ownerOnly {
     // this part about ownership, who can change etc. has to be tuned
     // owner can be a multisig wallet for example
-        AllowedDroneCaller = AbstractAuthorization(_newAllowed);
+        AllowedDroneCaller = Allowed(_newAllowed);
 }
 function changeAPIURL(string _newAPIURL) ownerOnly {
     // this part about ownership, who can change etc. has to be tuned
@@ -73,7 +69,7 @@ function changeAPIURL(string _newAPIURL) ownerOnly {
 
             /* METHODS */
 //for the moment flight requests are instantaneous 
-function requestFlight() {
+function requestFlight() payable {
     //no request if already a flight is already in progress
     if (currentDestination != 0x0000000000000000000000000000000000000000) throw;
     //check if msg.sender is Allowed
@@ -138,5 +134,6 @@ currentDestination = 0x0000000000000000000000000000000000000000;
     function resetStateOwner() ownerOnly {
 flightLog(currentDestination, "state reseted by owner");
 currentDestination = 0x0000000000000000000000000000000000000000;
+
 }
 }

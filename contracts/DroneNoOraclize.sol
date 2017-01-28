@@ -72,7 +72,7 @@ function changeAPIURL(string _newAPIURL) ownerOnly {
 
             /* METHODS */
 //for the moment flight requests are instantaneous 
-function requestFlight(uint _windSpeed) {
+function requestFlight(uint _windSpeed) payable {
     //no request if already a flight is already in progress
     if (currentDestination != 0x0000000000000000000000000000000000000000) throw;
     //check if msg.sender is Allowed
