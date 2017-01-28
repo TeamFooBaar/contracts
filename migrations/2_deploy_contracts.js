@@ -1,5 +1,6 @@
 module.exports = function(deployer) {
   deployer.deploy(OpenBar).then(() => {
-  	return deployer.deploy(DroneNoOraclize, "0x7354fcc6546002692219181ebd6d78a1882ffaba", OpenBar.address, "")
+  	console.log(OpenBar.address)
+  	return deployer.deploy(DroneNoOraclize, "0x2170e0bb64a50a6927d6ad29099b284a0453980d", OpenBar.address, "")
   })
 };
