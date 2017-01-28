@@ -48,7 +48,7 @@ function Drone(address _droneStation, address _allowed, string _APIURL ) {
     droneStation = _droneStation;
     AllowedDroneCaller = AbstractAuthorization(_allowed);
     APIURL = _APIURL;
-    currentDestination = 0x0;
+    currentDestination = 0x0000000000000000000000000000000000000000;
 
     } //initialize the droneStation address
 
@@ -75,7 +75,7 @@ function changeAPIURL(string _newAPIURL) ownerOnly {
 //for the moment flight requests are instantaneous 
 function requestFlight() {
     //no request if already a flight is already in progress
-    if (currentDestination != 0x0) throw;
+    if (currentDestination != 0x0000000000000000000000000000000000000000) throw;
     //check if msg.sender is Allowed
     _isAllowed = AllowedDroneCaller.isAllowed(msg.sender);
         if (!_isAllowed) throw; 
@@ -87,7 +87,7 @@ oraclize_query("URL", APIURL);
 
 function requestFlightOwner(address _to) ownerOnly {
     //no request if already a flight is already in progress
-    if (currentDestination != 0x0) throw;
+    if (currentDestination != 0x0000000000000000000000000000000000000000) throw;
     //check if destination is Allowed
     _isAllowed = AllowedDroneCaller.isAllowed(_to);
         if (!_isAllowed) throw; 
@@ -124,7 +124,7 @@ function __callback(bytes32 myid, string result) {
         uint _windSpeed = parseInt(result, 0);
         if (_windSpeed > 50){ // level 7 on the Beaufort scale : you should go sailing eaither
            flightRequest(currentDestination, "refused");
-           currentDestination = 0x0;
+           currentDestination = 0x0000000000000000000000000000000000000000;
         }
         flightRequest(currentDestination, "accepted");
     }
@@ -133,10 +133,10 @@ function __callback(bytes32 myid, string result) {
 
     function resetState(string _uploadedTo) droneOnly {
 flightLog(currentDestination, _uploadedTo);
-currentDestination = 0x0;
+currentDestination = 0x0000000000000000000000000000000000000000;
 }
     function resetStateOwner() ownerOnly {
 flightLog(currentDestination, "state reseted by owner");
-currentDestination = 0x0;
+currentDestination = 0x0000000000000000000000000000000000000000;
 }
 }
