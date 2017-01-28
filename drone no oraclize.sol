@@ -69,15 +69,21 @@ function changeAPIURL(string _newAPIURL) ownerOnly {
 
             /* METHODS */
 //for the moment flight requests are instantaneous 
-function requestFlight() {
+function requestFlight(uint _windSpeed) {
     //no request if already a flight is already in progress
     if (currentDestination != 0x0) throw;
     //check if msg.sender is Allowed
     _isAllowed = AllowedDroneCaller.isAllowed(msg.sender);
         if (!_isAllowed) throw; 
     //check if flight conditions are good
-    currentDestination = msg.sender;
-oraclize_query("URL", APIURL);
+
+            if (_windSpeed > 50){ // level 7 on the Beaufort scale : you should go sailing eaither
+           flightRequest(currentDestination, "refused");
+           currentDestination = 0x0;
+        }
+            currentDestination = msg.sender;
+        flightRequest(currentDestination, "accepted");
+
 
 }
 
@@ -89,13 +95,13 @@ function requestFlightOwner(address _to) ownerOnly {
         if (!_isAllowed) throw; 
     //check if flight conditions are good
     currentDestination = _to;
-oraclize_query("URL", APIURL);
+
 }
 
 
 //¤¤¤¤¤¤¤¤¤¤¤¤ CHAINSAWING STRING INTO UINT *¤¤¤¤¤¤¤¤¤¤¤
 // Copyright (c) 2015-2016 Oraclize srl, Thomas Bertani
-function parseInt(string _a, uint _b) internal returns (uint) {
+/*function parseInt(string _a, uint _b) internal returns (uint) {
   bytes memory bresult = bytes(_a);
   uint mint = 0;
   bool decimals = false;
@@ -110,19 +116,7 @@ function parseInt(string _a, uint _b) internal returns (uint) {
     } else if (bresult[i] == 46) decimals = true;
   }
   return mint;
-}
-
-            /* Oracle callback */ 
-                //"json(http://weathers.co/api.php?city=Zug).data.wind
-    
-function __callback(uint _windSpeed) {
-        if (_windSpeed > 50){ // level 7 on the Beaufort scale : you should go sailing eaither
-           flightRequest(currentDestination, "refused");
-           currentDestination = 0x0;
-        }
-        flightRequest(currentDestination, "accepted");
-    }
-    
+}*/
 
 
     function resetState(string _uploadedTo) droneOnly {
