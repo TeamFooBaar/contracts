@@ -44,7 +44,8 @@ Ropsten: 0x73f35C1f75Cc41C8c5ca0E1Fd6EC9f1dB6168820
 
 Deploy Drone : OK. Drone functions: OK! Oraclize callback giving the windspeed is working like charm.
 Ropsten: 0xf5Fe6d14876Ee366420fFc6cb597dfbc5E2dd1D5
-
+Oraclize gave a callback of 4.18 km/s for the windspeed today in Zug!
+https://testnet.etherscan.io/tx/0xaa134ab5f2b3695204ba1c3fc52dfe3d4187fca7dd7792c7cf4292027043805a
 ...
 
 All good!! https://testnet.etherscan.io/tx/0x96a79e9af144624db23db33a7cd9443510da0b14e6b0b8a44d8a3143fa0a81b4  logged an image on IPFS:
