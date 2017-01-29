@@ -38,12 +38,14 @@ The drone is now available for a new request and the dirtyness of the solar pane
 ### We could had another IoT reacting to the dirtyness, or publish a bounty contract for cleaning... to the mo0n!
 
 ## Tests:
-
+Contract Allowed handles the permissionning of the Meters / Contract Drone acts is the Ethereum Smartcontract handling the start of the flight
 Deploy Allowed : OK. Allowed functions: OK!
-
+Ropsten: 0x73f35C1f75Cc41C8c5ca0E1Fd6EC9f1dB6168820
 
 Deploy Drone : OK. Drone functions: OK! Oraclize callback giving the windspeed is working like charm.
+Ropsten: 0xf5Fe6d14876Ee366420fFc6cb597dfbc5E2dd1D5
 
 ...
 
-All good!!
+All good!! https://testnet.etherscan.io/tx/0x96a79e9af144624db23db33a7cd9443510da0b14e6b0b8a44d8a3143fa0a81b4  logged an image on IPFS:
+ipfs/Qmb5sPFXVFyds9tUeok9R2dhULvp8y83977Z1Na467Fa3x  (ie assets/dirtyJonathan.jpg )
